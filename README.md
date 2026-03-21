@@ -5,6 +5,16 @@ Projeto em Python desenvolvido para a disciplina de Engenharia de Software.
 ## Objetivo
 Criar um sistema para gerenciamento de tarefas acadêmicas, com suporte a cadastro, edição, remoção, conclusão e filtros de tarefas.
 
+## Arquitetura do Sistema
+
+O sistema segue uma abordagem orientada a objetos, utilizando a classe `GerenciadorTarefas` para centralizar a lógica da aplicação.
+
+As tarefas são armazenadas em um dicionário, onde:
+- a chave representa o ID da tarefa
+- o valor representa os dados da tarefa
+
+Essa estrutura permite acesso rápido, organização dos dados e facilita a implementação de testes automatizados.
+
 ## Estrutura inicial
 - `src/`: lógica do sistema
 - `tests/`: testes automatizados
@@ -27,7 +37,12 @@ Cada tarefa será representada por um dicionário com os seguintes campos:
 - prazo: data limite da tarefa
 
 ## Funcionalidades
-- Criar tarefa
+
+### ✔️ Implementadas
+- Criar tarefa (com validações)
+- Geração automática de ID
+
+### 🔜 Planejadas
 - Listar tarefas
 - Buscar tarefa por ID
 - Editar tarefa
@@ -69,3 +84,19 @@ Exemplo:
 - concluir_tarefa(id)
 - filtrar_por_status(status)
 - filtrar_por_prioridade(prioridade)
+
+
+## Testes Automatizados
+
+O projeto utilizará testes unitários com `pytest`.
+
+Serão criados testes para:
+- fluxos válidos
+- entradas inválidas
+- regras de negócio
+
+## CI/CD
+
+Será implementado um pipeline utilizando GitHub Actions para:
+- executar testes automaticamente
+- validar o funcionamento do sistema
