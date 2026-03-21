@@ -1,3 +1,7 @@
+## Observação
+
+Projeto em desenvolvimento.
+
 # Gerenciador de Tarefas Acadêmicas
 
 Projeto em Python desenvolvido para a disciplina de Engenharia de Software.
