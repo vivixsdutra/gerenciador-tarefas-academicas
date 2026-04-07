@@ -1,2 +1,2 @@
-pytestgit 
+pytest
 pytest==8.2.2
