@@ -2,9 +2,12 @@ name: CI/CD - Gerenciador de Tarefas Acadêmicas
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - chore-add-pytest
   pull_request:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -24,7 +27,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Instalar dependências
         run: |
@@ -36,7 +39,7 @@ jobs:
 
       - name: Executar testes unitários
         run: |
-          pytest -v --junitxml=artifacts/test-report.xml
+          PYTHONPATH=. pytest -v --junitxml=artifacts/test-report.xml
 
       - name: Salvar relatório de testes como artifact
         uses: actions/upload-artifact@v4
@@ -55,7 +58,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Instalar dependências
         run: |
@@ -74,47 +77,24 @@ jobs:
           path: dist/gerenciador-tarefas-academicas.zip
 
   notificacao:
-   notificacao:
-  name: Notificação (log)
-  runs-on: ubuntu-latest
-  needs: [testes, build]
-  if: always()
+    name: Notificação (log)
+    runs-on: ubuntu-latest
+    needs: [testes, build]
+    if: always()
 
-  steps:
-    - name: Exibir resultado do pipeline
-      run: |
-        echo "===== RESULTADO DO PIPELINE ====="
-        echo "Testes: ${{ needs.testes.result }}"
-        echo "Build: ${{ needs.build.result }}"
-        echo "Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-        if [ "${{ needs.testes.result }}" != "success" ] || [ "${{ needs.build.result }}" != "success" ]; then
-          echo "Pipeline falhou ❌"
-        else
-          echo "Pipeline executado com sucesso ✅"
-        fi
     steps:
-      - name: Baixar código
-        uses: actions/checkout@v4
+      - name: Exibir resultado do pipeline
+        run: |
+          echo "===== RESULTADO DO PIPELINE ====="
+          echo "Testes: ${{ needs.testes.result }}"
+          echo "Build: ${{ needs.build.result }}"
+          echo "Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Enviar notificação por script Python
-        env:
-          STATUS_TESTES: ${{ needs.testes.result }}
-          STATUS_BUILD: ${{ needs.build.result }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
-          EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
-          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          GITHUB_SERVER_URL: ${{ github.server_url }}
-        run: python scripts/notificar.py
+          if [ "${{ needs.testes.result }}" != "success" ] || [ "${{ needs.build.result }}" != "success" ]; then
+            echo "Pipeline falhou"
+          else
+            echo "Pipeline executado com sucesso"
+          fi
 
   deploy:
     name: Deploy GitHub Pages
