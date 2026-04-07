@@ -115,3 +115,99 @@ def test_filtrar_por_status_retorna_apenas_tarefas_com_status_informado():
     assert len(resultado) == 1
     assert resultado[id1]["status"] == "concluida"
 
+
+def test_criar_tarefa_com_titulo_vazio_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Título não pode ser vazio"):
+        gerenciador.criar_tarefa("", "C14", "Desc", "alta", "2026-03-25")
+
+
+def test_criar_tarefa_com_disciplina_vazia_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Disciplina não pode ser vazia"):
+        gerenciador.criar_tarefa("Tarefa", "", "Desc", "alta", "2026-03-25")
+
+
+def test_criar_tarefa_com_prioridade_invalida_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Prioridade inválida"):
+        gerenciador.criar_tarefa("Tarefa", "C14", "Desc", "urgente", "2026-03-25")
+
+
+def test_buscar_tarefa_inexistente_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Tarefa não encontrada"):
+        gerenciador.buscar_tarefa(999)
+
+
+def test_editar_tarefa_inexistente_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Tarefa não encontrada"):
+        gerenciador.editar_tarefa(999, titulo="Novo título")
+
+
+def test_editar_tarefa_com_titulo_vazio_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+    id_tarefa = gerenciador.criar_tarefa("Tarefa", "C14", "Desc", "alta", "2026-03-25")
+
+    with pytest.raises(ValueError, match="Título não pode ser vazio"):
+        gerenciador.editar_tarefa(id_tarefa, titulo="")
+
+
+def test_editar_tarefa_com_disciplina_vazia_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+    id_tarefa = gerenciador.criar_tarefa("Tarefa", "C14", "Desc", "alta", "2026-03-25")
+
+    with pytest.raises(ValueError, match="Disciplina não pode ser vazia"):
+        gerenciador.editar_tarefa(id_tarefa, disciplina="")
+
+
+def test_editar_tarefa_com_prioridade_invalida_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+    id_tarefa = gerenciador.criar_tarefa("Tarefa", "C14", "Desc", "alta", "2026-03-25")
+
+    with pytest.raises(ValueError, match="Prioridade inválida"):
+        gerenciador.editar_tarefa(id_tarefa, prioridade="urgente")
+
+
+def test_remover_tarefa_inexistente_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Tarefa não encontrada"):
+        gerenciador.remover_tarefa(999)
+
+
+def test_concluir_tarefa_inexistente_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Tarefa não encontrada"):
+        gerenciador.concluir_tarefa(999)
+
+
+def test_concluir_tarefa_ja_concluida_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+    id_tarefa = gerenciador.criar_tarefa("Tarefa", "C14", "Desc", "alta", "2026-03-25")
+
+    gerenciador.concluir_tarefa(id_tarefa)
+
+    with pytest.raises(ValueError, match="Tarefa já está concluída"):
+        gerenciador.concluir_tarefa(id_tarefa)
+
+
+def test_filtrar_por_prioridade_invalida_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Prioridade inválida"):
+        gerenciador.filtrar_por_prioridade("urgente")
+
+
+def test_filtrar_por_status_invalido_lanca_erro():
+    gerenciador = GerenciadorTarefas()
+
+    with pytest.raises(ValueError, match="Status inválido"):
+        gerenciador.filtrar_por_status("cancelada")
