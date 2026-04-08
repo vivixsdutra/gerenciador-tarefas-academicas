@@ -131,24 +131,8 @@ jobs:
         with:
           enablement: true
 
-      - name: Gerar página estática
-        run: |
-          mkdir -p site
-          cat > site/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html lang="pt-BR">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Gerenciador de Tarefas Acadêmicas</title>
-          </head>
-          <body>
-            <h1>Gerenciador de Tarefas Acadêmicas</h1>
-            <p>Deploy automático realizado com GitHub Actions.</p>
-            <p>Build e testes executados com sucesso antes da publicação.</p>
-          </body>
-          </html>
-          EOF
+      - name: Verificar site estático
+        run: test -f site/index.html
 
       - name: Enviar artifact do Pages
         uses: actions/upload-pages-artifact@v3
