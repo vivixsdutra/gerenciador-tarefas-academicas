@@ -8,5 +8,6 @@ env/
 dist/
 build/
 .pytest_cache/
+site/test-report.html
 .vscode/
 .idea/

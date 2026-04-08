@@ -157,6 +157,17 @@
     footer a:hover {
       border-bottom-color: var(--margem);
     }
+
+    .grid a {
+      color: var(--margem);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .grid a:hover {
+      border-bottom-color: var(--margem);
+    }
   </style>
 </head>
 <body>
@@ -190,6 +201,16 @@
           <div>
             <strong>Projeto acadêmico</strong>
             <span>Aplicação em Python para organizar tarefas pelo terminal.</span>
+          </div>
+        </li>
+        <li>
+          <span class="icon" aria-hidden="true">📊</span>
+          <div>
+            <strong>Relatório de testes (pytest-html)</strong>
+            <span>
+              <a href="test-report.html">Abrir o relatório HTML da última execução do pipeline</a>
+              (gerado automaticamente no CI).
+            </span>
           </div>
         </li>
       </ul>
