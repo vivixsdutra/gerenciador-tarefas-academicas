@@ -1,106 +1,111 @@
-## Observação
+# 📚 Gerenciador de Tarefas Acadêmicas
 
-Projeto em desenvolvimento.
+Sistema desenvolvido em Python para gerenciamento de tarefas acadêmicas via terminal, com suporte a CRUD completo, filtros e validações, além de integração com CI/CD utilizando GitHub Actions.
 
-# Gerenciador de Tarefas Acadêmicas
+---
 
-Projeto em Python desenvolvido para a disciplina de Engenharia de Software.
+## 🎯 Objetivo
 
-## Objetivo
-Criar um sistema para gerenciamento de tarefas acadêmicas, com suporte a cadastro, edição, remoção, conclusão e filtros de tarefas.
+Facilitar a organização de atividades acadêmicas, permitindo ao usuário criar, acompanhar e gerenciar suas tarefas de forma simples e eficiente diretamente pelo terminal.
 
-## Arquitetura do Sistema
+---
 
-O sistema segue uma abordagem orientada a objetos, utilizando a classe `GerenciadorTarefas` para centralizar a lógica da aplicação.
+## ⚙️ Funcionalidades
 
-As tarefas são armazenadas em um dicionário, onde:
-- a chave representa o ID da tarefa
-- o valor representa os dados da tarefa
+- ✅ Criar tarefas
+- 📋 Listar tarefas
+- 🔍 Buscar tarefa por ID
+- ✏️ Editar tarefas
+- 🗑️ Remover tarefas (com confirmação)
+- ✔️ Marcar tarefas como concluídas
+- 🎯 Filtrar tarefas por:
+  - Disciplina
+  - Prioridade (baixa, média, alta)
+  - Status (pendente, em andamento, concluída)
 
-Essa estrutura permite acesso rápido, organização dos dados e facilita a implementação de testes automatizados.
+---
 
-## Estrutura inicial
-- `src/`: lógica do sistema
-- `tests/`: testes automatizados
-- `main.py`: ponto de entrada da aplicação
-
-## Tecnologias
-- Python
-- Pytest
-- GitHub Actions
-
-## Modelo de Dados
-Cada tarefa será representada por um dicionário com os seguintes campos:
-
-- id: identificador único
-- titulo: nome da tarefa
-- disciplina: matéria relacionada
-- descricao: detalhes da tarefa
-- prioridade: baixa, media ou alta
-- status: pendente, em andamento ou concluida
-- prazo: data limite da tarefa
-
-## Funcionalidades
-
-### ✔️ Implementadas
-- Criar tarefa (com validações)
-- Geração automática de ID
-
-### 🔜 Planejadas
-- Listar tarefas
-- Buscar tarefa por ID
-- Editar tarefa
-- Remover tarefa
-- Concluir tarefa
-- Filtrar por disciplina
-- Filtrar por prioridade
-- Filtrar por status
-
-## Regras de Negócio
-- O título não pode ser vazio
-- A disciplina não pode ser vazia
-- A prioridade deve ser: baixa, media ou alta
-- O status deve ser: pendente, em andamento ou concluida
-- Não é permitido editar tarefas inexistentes
-- Não é permitido remover tarefas inexistentes
-- Não é permitido concluir tarefas já concluídas
-- O prazo deve estar em um formato válido
-
-## Estrutura do Sistema
-O sistema será baseado em um dicionário onde:
-
-- A chave será o ID da tarefa
-- O valor será um dicionário com os dados da tarefa
-
-Exemplo:
-
-{
-  1: { "titulo": "Estudar", ... },
-  2: { "titulo": "Trabalho", ... }
-}
-
-## Funções Planejadas
-- criar_tarefa()
-- listar_tarefas()
-- buscar_tarefa(id)
-- editar_tarefa(id, dados)
-- remover_tarefa(id)
-- concluir_tarefa(id)
-- filtrar_por_status(status)
-- filtrar_por_prioridade(prioridade)
+## 🧱 Estrutura do Projeto
+gerenciador-tarefas-academicas/
+│
+├── src/
+│ └── gerenciador.py # Lógica principal do sistema
+│
+├── tests/
+│ └── test_gerenciador.py # Testes unitários com pytest
+│
+├── main.py # Interface via terminal
+├── notificar.py # Script de notificação do pipeline
+├── requirements.txt # Dependências do projeto
+└── .github/workflows/
+└── ci-cd.yml # Pipeline CI/CD
 
 
-## Testes Automatizados
+---
 
-O projeto utilizará testes unitários com `pytest`.
+## 🚀 Como executar o projeto
 
-Serão criados testes para:
-- fluxos válidos
-- entradas inválidas
-- regras de negócio
+### 1. Clone o repositório
+```bash
+git clone https://github.com/SEU_USUARIO/gerenciador-tarefas-academicas.git
+cd gerenciador-tarefas-academicas
+2. Crie um ambiente virtual (opcional)
+python -m venv venv
+venv\Scripts\activate  # Windows
+3. Instale as dependências
+pip install -r requirements.txt
+4. Execute o sistema
+python main.py
+🧪 Testes
 
-## CI/CD
+O projeto utiliza pytest para testes automatizados.
 
-Será implementado um pipeline utilizando GitHub Actions para:
-- executar testes automaticamente
-- validar o funcionamento do sistema
+Para executar:
+
+pytest -v
+🔁 CI/CD com GitHub Actions
+
+O pipeline automatiza:
+
+🔧 Instalação de dependências
+🧪 Execução dos testes
+📦 Geração de pacote do projeto
+📊 Geração de relatório de testes
+📣 Notificação do resultado do pipeline
+🌐 Deploy automático no GitHub Pages (quando na branch main)
+📧 Notificação do Pipeline
+
+O sistema suporta envio de e-mails com o resultado do CI/CD.
+
+Para ativar, configure os seguintes secrets no GitHub:
+
+SMTP_HOST
+SMTP_PORT
+EMAIL_REMETENTE
+EMAIL_SENHA
+EMAIL_DESTINO
+🛠️ Tecnologias Utilizadas
+Python 3.11
+Pytest
+GitHub Actions
+SMTP (envio de e-mails)
+
+📌 Regras de Negócio
+
+O título e a disciplina não podem ser vazios
+Prioridade deve ser: baixa, media ou alta
+Status válidos: pendente, em andamento, concluida
+IDs são gerados automaticamente e são únicos
+Não é possível concluir uma tarefa já concluída
+
+🤖 Uso de Inteligência Artificial
+
+A Inteligência Artificial foi utilizada como ferramenta de apoio durante o desenvolvimento do projeto, auxiliando na estruturação e refatoração do código, sugestão de tipos de testes, definição do pipeline de CI/CD e identificação/correção de erros. Seu uso teve caráter complementar, com todas as decisões finais de implementação, validação e organização sendo realizadas manualmente.
+
+👨‍💻 Autor
+
+Desenvolvido por Vitória Dutra e Letícia Moraes
+
+📄 Licença
+
+Este projeto é apenas para fins acadêmicos.
