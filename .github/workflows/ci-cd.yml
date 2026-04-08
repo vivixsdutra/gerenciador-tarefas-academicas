@@ -44,25 +44,8 @@ jobs:
           PYTHONPATH=. pytest -v \
             --junitxml=artifacts/test-report.xml \
             --html=site/test-report.html \
-            --self-contained-html
-
-      - name: Criar página inicial do relatório
-        run: |
-          cat > site/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html lang="pt-BR">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Relatório de Testes - Gerenciador de Tarefas Acadêmicas</title>
-          </head>
-          <body>
-            <h1>Relatório de Testes</h1>
-            <p>Projeto: Gerenciador de Tarefas Acadêmicas</p>
-            <p><a href="./test-report.html">Abrir relatório HTML dos testes</a></p>
-          </body>
-          </html>
-          EOF
+            --self-contained-html \
+            --css=site/pytest-theme.css
 
       - name: Salvar relatório XML como artifact
         uses: actions/upload-artifact@v4
