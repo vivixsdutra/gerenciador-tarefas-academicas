@@ -1,4 +1,6 @@
+
 from src.gerenciador import GerenciadorTarefas
+
 
 def exibir_menu():
     print("\n=== GERENCIADOR DE TAREFAS ACADÊMICAS ===")
@@ -69,6 +71,8 @@ def main():
                 if confirmacao.lower() == "s":
                     gerenciador.remover_tarefa(id_tarefa)
                     print("Tarefa removida")
+                else:
+                    print("Remoção cancelada")
 
             elif opcao == "6":
                 id_tarefa = int(input("ID da tarefa: "))
@@ -103,5 +107,5 @@ def main():
             print("Erro inesperado")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()

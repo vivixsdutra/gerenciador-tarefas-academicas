@@ -1,3 +1,4 @@
+
 name: CI/CD - Gerenciador de Tarefas Acadêmicas
 
 on:
@@ -5,6 +6,7 @@ on:
     branches:
       - main
       - chore-add-pytest
+      - ci-cd-github-actions
   pull_request:
     branches:
       - main
@@ -77,24 +79,33 @@ jobs:
           path: dist/gerenciador-tarefas-academicas.zip
 
   notificacao:
-    name: Notificação (log)
+    name: Notificação
     runs-on: ubuntu-latest
     needs: [testes, build]
     if: always()
 
     steps:
-      - name: Exibir resultado do pipeline
-        run: |
-          echo "===== RESULTADO DO PIPELINE ====="
-          echo "Testes: ${{ needs.testes.result }}"
-          echo "Build: ${{ needs.build.result }}"
-          echo "Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - name: Baixar código
+        uses: actions/checkout@v4
 
-          if [ "${{ needs.testes.result }}" != "success" ] || [ "${{ needs.build.result }}" != "success" ]; then
-            echo "Pipeline falhou"
-          else
-            echo "Pipeline executado com sucesso"
-          fi
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Executar script de notificação
+        env:
+          STATUS_TESTES: ${{ needs.testes.result }}
+          STATUS_BUILD: ${{ needs.build.result }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
+        run: python notificar.py
 
   deploy:
     name: Deploy GitHub Pages

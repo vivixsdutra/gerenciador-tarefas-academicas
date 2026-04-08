@@ -1,3 +1,4 @@
+
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -46,5 +47,5 @@ Execução: {server_url}/{repositorio}/actions/runs/{run_id}
     print("Notificação enviada com sucesso.")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
