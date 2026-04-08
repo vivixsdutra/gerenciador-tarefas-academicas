@@ -77,12 +77,15 @@ jobs:
           path: dist/gerenciador-tarefas-academicas.zip
 
   notificacao:
-    name: Notificação (log)
+    name: Notificação por e-mail
     runs-on: ubuntu-latest
     needs: [testes, build]
     if: always()
 
     steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
       - name: Exibir resultado do pipeline
         run: |
           echo "===== RESULTADO DO PIPELINE ====="
@@ -95,6 +98,20 @@ jobs:
           else
             echo "Pipeline executado com sucesso"
           fi
+
+      - name: Enviar notificação por e-mail
+        env:
+          STATUS_TESTES: ${{ needs.testes.result }}
+          STATUS_BUILD: ${{ needs.build.result }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
+        run: python scripts/notificar.py
 
   deploy:
     name: Deploy GitHub Pages
