@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -34,18 +34,52 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Criar pasta de artifacts
-        run: mkdir -p artifacts
+      - name: Criar pastas de saída
+        run: |
+          mkdir -p artifacts
+          mkdir -p site
 
       - name: Executar testes unitários
         run: |
-          PYTHONPATH=. pytest -v --junitxml=artifacts/test-report.xml
+          PYTHONPATH=. pytest -v \
+            --junitxml=artifacts/test-report.xml \
+            --html=site/test-report.html \
+            --self-contained-html
 
-      - name: Salvar relatório de testes como artifact
+      - name: Criar página inicial do relatório
+        run: |
+          cat > site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Relatório de Testes - Gerenciador de Tarefas Acadêmicas</title>
+          </head>
+          <body>
+            <h1>Relatório de Testes</h1>
+            <p>Projeto: Gerenciador de Tarefas Acadêmicas</p>
+            <p><a href="./test-report.html">Abrir relatório HTML dos testes</a></p>
+          </body>
+          </html>
+          EOF
+
+      - name: Salvar relatório XML como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: relatorio-testes
+          name: relatorio-testes-xml
           path: artifacts/test-report.xml
+
+      - name: Salvar relatório HTML como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-testes-html
+          path: site/test-report.html
+
+      - name: Enviar artifact do GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
 
   build:
     name: Build
@@ -68,7 +102,7 @@ jobs:
       - name: Criar pacote distribuível
         run: |
           mkdir -p dist
-          zip -r dist/gerenciador-tarefas-academicas.zip main.py src tests README.md requirements.txt
+          zip -r dist/gerenciador-tarefas-academicas.zip main.py src tests README.md requirements.txt scripts site
 
       - name: Salvar pacote como artifact
         uses: actions/upload-artifact@v4
@@ -91,7 +125,7 @@ jobs:
           echo "===== RESULTADO DO PIPELINE ====="
           echo "Testes: ${{ needs.testes.result }}"
           echo "Build: ${{ needs.build.result }}"
-          echo "Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "Link: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           if [ "${{ needs.testes.result }}" != "success" ] || [ "${{ needs.build.result }}" != "success" ]; then
             echo "Pipeline falhou"
@@ -113,32 +147,51 @@ jobs:
           EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
         run: python scripts/notificar.py
 
-  deploy:
+  deploy_pages:
     name: Deploy GitHub Pages
     runs-on: ubuntu-latest
     needs: [testes, build]
     if: github.ref == 'refs/heads/main' && needs.testes.result == 'success' && needs.build.result == 'success'
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Baixar código
-        uses: actions/checkout@v4
-
       - name: Configurar Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Verificar site estático
-        run: test -f site/index.html
-
-      - name: Enviar artifact do Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
 
       - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  release:
+    name: Deploy GitHub Releases
+    runs-on: ubuntu-latest
+    needs: [testes, build]
+    if: github.ref == 'refs/heads/main' && needs.testes.result == 'success' && needs.build.result == 'success'
+
+    steps:
+      - name: Baixar artifact do pacote
+        uses: actions/download-artifact@v4
+        with:
+          name: pacote-projeto
+          path: dist
+
+      - name: Criar Release no GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          body: |
+            Release automática gerada pelo pipeline CI/CD.
+
+            Resultados:
+            - Testes: ${{ needs.testes.result }}
+            - Build: ${{ needs.build.result }}
+
+            Execução:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          files: dist/gerenciador-tarefas-academicas.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
